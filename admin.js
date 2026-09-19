@@ -12,10 +12,10 @@
 const API = "https://mqyfohctaaqdjpninyrj.supabase.co/functions/v1/admin";
 const MODULES = ["backup", "friends", "names", "extract"];
 const MODULE_LABELS = {
-  backup: "Yedekle",
-  friends: "Arkadaş Ekle",
+  backup: "Yedek Al",
+  friends: "İstek Gönder",
   names: "İsim Ver",
-  extract: "Hesaptan Çıkar",
+  extract: "Yedek Çöz",
 };
 const STORE = "hds-admin-session";
 
