@@ -1,9 +1,25 @@
+/* Always light: this page is read next to the Supabase dashboard, and a half
+   dark, half light pair is worse than one bright page. */
 :root {
-  color-scheme: light dark;
-  --line: #8884;
-  --muted: #888;
-  --bad: #c0392b;
-  --ok: #2e8b57;
+  color-scheme: light;
+  --bg: #f4f6fa;
+  --surface: #fff;
+  --text: #111827;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --brand: #2f6fed;
+  --brand-dark: #2559c9;
+  --ok-bg: #e7f6ed;
+  --ok-fg: #17683a;
+  --bad-bg: #fdecec;
+  --bad-fg: #b3261e;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 10px 24px rgb(16 24 40 / 6%);
+}
+
+/* #login sets display, so it must not claim it while hidden. */
+[hidden] {
+  display: none;
 }
 
 * {
@@ -12,94 +28,168 @@
 
 body {
   margin: 0;
+  background: var(--bg);
+  color: var(--text);
   font:
-    14px / 1.45 system-ui,
+    14px / 1.5 "Segoe UI Variable Text",
     "Segoe UI",
+    system-ui,
     sans-serif;
 }
 
 header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 14px 24px;
+  background: var(--surface);
   border-bottom: 1px solid var(--line);
 }
 
+.mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: linear-gradient(140deg, var(--brand), #6aa1ff);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 header h1 {
-  font-size: 16px;
-  margin: 0;
   flex: 1;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+h2 {
+  margin: 0 0 4px;
+  font-size: 17px;
 }
 
 main {
-  padding: 20px;
-  max-width: 1200px;
+  max-width: 1180px;
   margin: 0 auto;
+  padding: 24px 20px 48px;
 }
 
-section[hidden] {
-  display: none;
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 #login {
-  max-width: 360px;
-  margin: 60px auto;
+  max-width: 380px;
+  margin: 72px auto;
+  padding: 26px;
+  gap: 14px;
+}
+
+#login:not([hidden]) {
   display: grid;
-  gap: 10px;
 }
 
 label {
   display: grid;
-  gap: 4px;
+  gap: 5px;
   font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+label small {
+  font-weight: 400;
+  color: var(--muted);
 }
 
 input,
-select,
-textarea,
-button {
+textarea {
   font: inherit;
-  padding: 6px 8px;
+  width: 100%;
+  padding: 8px 11px;
   border: 1px solid var(--line);
-  border-radius: 6px;
-  background: transparent;
+  border-radius: 9px;
+  background: var(--surface);
   color: inherit;
 }
 
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px rgb(47 111 237 / 15%);
+}
+
 button {
+  font: inherit;
+  font-weight: 500;
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface);
+  color: inherit;
   cursor: pointer;
+  transition:
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+button:hover:not(:disabled) {
+  background: #f3f4f6;
 }
 
 button.primary {
-  background: #2f6fed;
+  background: var(--brand);
+  border-color: var(--brand);
   color: #fff;
-  border-color: #2f6fed;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--brand-dark);
+  border-color: var(--brand-dark);
 }
 
 button.danger {
-  color: var(--bad);
+  color: var(--bad-fg);
+  border-color: #f0c8c5;
+}
+
+button.danger:hover:not(:disabled) {
+  background: var(--bad-bg);
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: default;
 }
 
 .toolbar {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .toolbar input {
-  flex: 1;
-  max-width: 320px;
+  max-width: 260px;
 }
 
 .toolbar .spacer {
   flex: 1;
+}
+
+.table-wrap {
+  overflow-x: auto;
 }
 
 table {
@@ -110,78 +200,166 @@ table {
 th,
 td {
   text-align: left;
-  padding: 8px 6px;
-  border-bottom: 1px solid var(--line);
+  padding: 12px 14px;
   vertical-align: top;
 }
 
 th {
+  font-size: 11px;
   font-weight: 600;
-  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--muted);
+  background: #fafbfd;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
 }
 
-.status-active {
-  color: var(--ok);
+td {
+  border-bottom: 1px solid #f1f2f4;
 }
 
-.status-revoked {
-  color: var(--bad);
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+tbody tr:hover td {
+  background: #fafbfd;
+}
+
+td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge.ok {
+  background: var(--ok-bg);
+  color: var(--ok-fg);
+}
+
+.badge.bad {
+  background: var(--bad-bg);
+  color: var(--bad-fg);
+}
+
+.chip {
+  display: inline-block;
+  margin: 0 4px 4px 0;
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: #f1f4f9;
+  color: #33415a;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .muted {
   color: var(--muted);
 }
 
+.empty {
+  margin: 0;
+  padding: 28px;
+  text-align: center;
+  color: var(--muted);
+}
+
 .actions {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .actions button {
-  padding: 3px 7px;
-  font-size: 12px;
+  height: 30px;
+  padding: 0 11px;
+  font-size: 12.5px;
 }
 
 details summary {
   cursor: pointer;
+  color: var(--brand);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 details ul {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
   padding-left: 16px;
-  font-size: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
 }
 
 .msg {
   min-height: 1.4em;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .error {
-  color: var(--bad);
+  color: var(--bad-fg);
 }
 
 dialog {
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 18px;
-  min-width: 360px;
-  max-width: 480px;
+  border: 0;
+  border-radius: 14px;
+  padding: 24px;
+  min-width: 400px;
+  max-width: 460px;
+  box-shadow: 0 24px 60px rgb(16 24 40 / 22%);
+  color: var(--text);
 }
 
 dialog::backdrop {
-  background: #0006;
+  background: rgb(15 23 42 / 45%);
 }
 
 dialog form {
   display: grid;
-  gap: 10px;
+  gap: 14px;
 }
 
-dialog h2 {
-  margin: 0 0 4px;
-  font-size: 15px;
+fieldset {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+legend {
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.checks {
+  display: flex;
+  gap: 8px 18px;
+  flex-wrap: wrap;
+}
+
+.checks label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-weight: 400;
+}
+
+.checks input {
+  width: auto;
+  accent-color: var(--brand);
 }
 
 .row {
@@ -190,25 +368,15 @@ dialog h2 {
   justify-content: flex-end;
 }
 
-.checks {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.checks label {
-  flex-direction: row;
-  align-items: center;
-  display: flex;
-  gap: 4px;
-}
-
 code.key {
   display: block;
-  font-size: 18px;
-  padding: 10px;
-  border: 1px dashed var(--line);
-  border-radius: 6px;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px dashed #c7d2e5;
+  border-radius: 10px;
+  background: #f8fafc;
+  font-size: 20px;
+  letter-spacing: 0.04em;
   text-align: center;
   user-select: all;
 }

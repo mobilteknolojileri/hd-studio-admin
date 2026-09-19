@@ -10,12 +10,15 @@
 </head>
 <body>
 <header>
-  <h1>HD Studio — Lisanslar</h1>
+  <span class="mark">HD</span>
+  <h1>Lisanslar</h1>
   <span id="who" class="muted"></span>
   <button type="button" id="logout" hidden>Çıkış</button>
 </header>
+
 <main>
-  <section id="login">
+  <section id="login" class="card">
+    <h2>Giriş</h2>
     <label>E-posta <input id="email" type="email" autocomplete="username" required></label>
     <label>Parola <input id="password" type="password" autocomplete="current-password" required></label>
     <button type="button" id="login-btn" class="primary">Giriş</button>
@@ -26,20 +29,22 @@
     <div class="toolbar">
       <button type="button" id="new-btn" class="primary">Yeni lisans</button>
       <button type="button" id="refresh-btn">Yenile</button>
-      <input id="filter" type="search" placeholder="Müşteri adına göre süz">
+      <input id="filter" type="search" placeholder="Müşteri ara">
       <span class="spacer"></span>
       <span id="app-msg" class="msg"></span>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Müşteri</th><th>Durum</th><th>Makine</th><th>Kanal</th><th>Modüller</th>
-          <th>Bitiş</th><th>Not</th><th>Oluşturma</th><th>İşlemler</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <p id="empty" class="muted" hidden>Henüz lisans yok.</p>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Müşteri</th><th>Durum</th><th>Makine</th><th>Modüller</th>
+            <th>Bitiş</th><th>Not</th><th>Oluşturma</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p id="empty" class="empty" hidden>Henüz lisans yok.</p>
+    </div>
   </section>
 </main>
 
@@ -47,10 +52,12 @@
   <form id="license-form" method="dialog">
     <h2 id="dlg-title">Yeni lisans</h2>
     <label id="customer-row">Müşteri adı <input name="customer_name" maxlength="120"></label>
-    <label>Makine sayısı <input name="max_machines" type="number" min="1" max="50" value="2" required></label>
-    <div class="checks" id="module-checks"></div>
-    <label>Kanal <input name="channel" value="stable" pattern="[a-z0-9-]{1,20}" required></label>
-    <label>Bitiş tarihi, gg.aa.yyyy (boş = süresiz) <input name="expires_at" type="date" lang="tr-TR"></label>
+    <label>Kaç bilgisayarda çalışsın <input name="max_machines" type="number" min="1" max="50" value="2" required></label>
+    <fieldset>
+      <legend>Açık araçlar</legend>
+      <div class="checks" id="module-checks"></div>
+    </fieldset>
+    <label>Bitiş tarihi <input name="expires_at" type="date" lang="tr-TR"> <small>Boş bırakırsan süresiz.</small></label>
     <label>Not <textarea name="note" rows="2" maxlength="500"></textarea></label>
     <p id="dlg-error" class="msg error" role="alert"></p>
     <div class="row">

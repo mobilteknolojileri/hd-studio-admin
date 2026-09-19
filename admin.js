@@ -144,6 +144,19 @@ async function mutate(action, payload) {
   await refresh();
 }
 
+function statusCell(license) {
+  const td = el("td");
+  const active = license.status === "active";
+  td.appendChild(el("span", active ? "Etkin" : "İptal", active ? "badge ok" : "badge bad"));
+  return td;
+}
+
+function moduleCell(license) {
+  const td = el("td");
+  for (const m of license.modules || []) td.appendChild(el("span", MODULE_LABELS[m] || m, "chip"));
+  return td;
+}
+
 function machineCell(license) {
   const machines = license.activations || [];
   const td = el("td");
@@ -205,10 +218,9 @@ function render() {
     shown++;
     const tr = el("tr");
     tr.appendChild(el("td", l.customer_name));
-    tr.appendChild(el("td", l.status === "active" ? "Etkin" : "İptal", `status-${l.status}`));
+    tr.appendChild(statusCell(l));
     tr.appendChild(machineCell(l));
-    tr.appendChild(el("td", l.channel));
-    tr.appendChild(el("td", (l.modules || []).map((m) => MODULE_LABELS[m] || m).join(", ")));
+    tr.appendChild(moduleCell(l));
     tr.appendChild(el("td", l.expires_at ? fmtDay(l.expires_at) : "Süresiz"));
     tr.appendChild(el("td", l.note || ""));
     tr.appendChild(el("td", fmtDay(l.created_at)));
@@ -243,7 +255,6 @@ function openDialog(license) {
   $("customer-row").hidden = Boolean(license);
   form.customer_name.value = "";
   form.max_machines.value = license ? license.max_machines : 2;
-  form.channel.value = license ? license.channel : "stable";
   form.expires_at.value = license ? toDayInput(license.expires_at) : "";
   form.note.value = license ? license.note || "" : "";
   const mods = license ? license.modules : MODULES;
@@ -260,7 +271,9 @@ form.addEventListener("submit", async (ev) => {
   const payload = {
     max_machines: Number.parseInt(form.max_machines.value, 10),
     modules: checked.map((cb) => cb.value),
-    channel: form.channel.value.trim(),
+    // Not on screen: there is one channel today, and editing keeps whatever a
+    // licence already has.
+    channel: state.editing?.channel || "stable",
     expires_at: form.expires_at.value || null,
     note: form.note.value.trim() || null,
   };
