@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="content-security-policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://mqyfohctaaqdjpninyrj.supabase.co; form-action 'none'; base-uri 'none'">
+<title>HD Studio — Lisanslar</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<header>
+  <h1>HD Studio — Lisanslar</h1>
+  <span id="who" class="muted"></span>
+  <button type="button" id="logout" hidden>Çıkış</button>
+</header>
+<main>
+  <section id="login">
+    <label>E-posta <input id="email" type="email" autocomplete="username" required></label>
+    <label>Parola <input id="password" type="password" autocomplete="current-password" required></label>
+    <button type="button" id="login-btn" class="primary">Giriş</button>
+    <p id="login-error" class="msg error" role="alert"></p>
+  </section>
+
+  <section id="app" hidden>
+    <div class="toolbar">
+      <button type="button" id="new-btn" class="primary">Yeni lisans</button>
+      <button type="button" id="refresh-btn">Yenile</button>
+      <input id="filter" type="search" placeholder="Müşteri adına göre süz">
+      <span class="spacer"></span>
+      <span id="app-msg" class="msg"></span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Müşteri</th><th>Durum</th><th>Makine</th><th>Kanal</th><th>Modüller</th>
+          <th>Bitiş</th><th>Not</th><th>Oluşturma</th><th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p id="empty" class="muted" hidden>Henüz lisans yok.</p>
+  </section>
+</main>
+
+<dialog id="dlg-license">
+  <form id="license-form" method="dialog">
+    <h2 id="dlg-title">Yeni lisans</h2>
+    <label id="customer-row">Müşteri adı <input name="customer_name" maxlength="120"></label>
+    <label>Makine sayısı <input name="max_machines" type="number" min="1" max="50" value="2" required></label>
+    <div class="checks" id="module-checks"></div>
+    <label>Kanal <input name="channel" value="stable" pattern="[a-z0-9-]{1,20}" required></label>
+    <label>Bitiş tarihi, gg.aa.yyyy (boş = süresiz) <input name="expires_at" type="date" lang="tr-TR"></label>
+    <label>Not <textarea name="note" rows="2" maxlength="500"></textarea></label>
+    <p id="dlg-error" class="msg error" role="alert"></p>
+    <div class="row">
+      <button type="button" id="dlg-cancel">Vazgeç</button>
+      <button type="submit" class="primary" id="dlg-save">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlg-key">
+  <h2>Lisans anahtarı</h2>
+  <p>Anahtarı şimdi kopyalayın; <strong>bir daha gösterilmez</strong>.</p>
+  <code class="key" id="key-text"></code>
+  <p id="key-customer" class="muted"></p>
+  <div class="row">
+    <button type="button" id="key-copy">Kopyala</button>
+    <button type="button" id="key-close" class="primary">Kapat</button>
+  </div>
+</dialog>
+
+<script src="admin.js"></script>
+</body>
+</html>
