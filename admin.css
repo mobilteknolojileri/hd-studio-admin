@@ -50,23 +50,10 @@ header {
 }
 
 .mark {
-<<<<<<< HEAD
   width: 30px;
   height: 30px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgb(16 24 40 / 18%);
-=======
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  background: linear-gradient(140deg, var(--brand), #6aa1ff);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
->>>>>>> e4c363d752dd945b74aed39e56bf97b534de88aa
 }
 
 header h1 {
