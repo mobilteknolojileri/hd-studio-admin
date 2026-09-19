@@ -147,7 +147,7 @@ async function mutate(action, payload) {
 function statusCell(license) {
   const td = el("td");
   const active = license.status === "active";
-  td.appendChild(el("span", active ? "Etkin" : "İptal", active ? "badge ok" : "badge bad"));
+  td.appendChild(el("span", active ? "Çalışıyor" : "Kapalı", active ? "badge ok" : "badge bad"));
   return td;
 }
 
@@ -164,10 +164,11 @@ function machineCell(license) {
   det.appendChild(el("summary", `${machines.length} / ${license.max_machines}`));
   const ul = el("ul");
   for (const a of machines) {
-    const line = `${a.hostname || "?"} · ${a.app_version || "?"} · son: ${fmtDateTime(a.last_seen_at)}`;
+    const line = `${a.hostname || "Bilinmeyen bilgisayar"} · son açılış: ${fmtDateTime(a.last_seen_at)}`;
     ul.appendChild(el("li", line));
   }
-  if (machines.length === 0) ul.appendChild(el("li", "Henüz etkinleştirilmedi.", "muted"));
+  if (machines.length === 0)
+    ul.appendChild(el("li", "Henüz hiçbir bilgisayarda açılmadı.", "muted"));
   det.appendChild(ul);
   td.appendChild(det);
   return td;
@@ -182,26 +183,20 @@ function actionCell(license) {
   edit.addEventListener("click", () => openDialog(license));
   box.appendChild(edit);
 
-  if (license.status === "active") {
-    const revoke = el("button", "İptal et", "danger");
-    revoke.addEventListener("click", () => {
-      const q = `${license.customer_name} lisansı iptal edilsin mi? Uygulama bir sonraki denetimde kilitlenir.`;
-      if (confirm(q)) mutate("revoke", { id: license.id });
-    });
-    box.appendChild(revoke);
-  } else {
-    const back = el("button", "Etkinleştir");
-    back.addEventListener("click", () => mutate("reactivate", { id: license.id }));
-    box.appendChild(back);
-  }
-
-  const reset = el("button", "Makineleri sıfırla");
+  const reset = el("button", "Bilgisayarları sıfırla");
   reset.disabled = machines.length === 0;
   reset.addEventListener("click", () => {
-    const q = `${license.customer_name} için ${machines.length} makine kaydı silinsin mi? Çalışan makineler günlük denetimde yeniden kaydolur.`;
+    const q = `${license.customer_name} için kayıtlı ${machines.length} bilgisayar unutulsun mu? Aynı anahtarla yeni bir bilgisayara kurulum yapılabilir.`;
     if (confirm(q)) mutate("reset_machines", { id: license.id });
   });
   box.appendChild(reset);
+
+  const del = el("button", "Sil", "danger");
+  del.addEventListener("click", () => {
+    const q = `${license.customer_name} silinsin mi? Anahtar bir daha çalışmaz ve bu işlem geri alınamaz.`;
+    if (confirm(q)) mutate("delete", { id: license.id });
+  });
+  box.appendChild(del);
 
   td.appendChild(box);
   return td;
