@@ -10,12 +10,13 @@
 
 // Public project URL; the page must be allowed in the ADMIN_ORIGINS secret.
 const API = "https://mqyfohctaaqdjpninyrj.supabase.co/functions/v1/admin";
-const MODULES = ["backup", "friends", "names", "extract"];
+const MODULES = ["backup", "friends", "names", "extract", "repair"];
 const MODULE_LABELS = {
   backup: "Yedek Al",
   friends: "İstek Gönder",
   names: "İsim Ver",
   extract: "Yedek Çöz",
+  repair: "Yedek Onar",
 };
 const STORE = "hds-admin-session";
 
