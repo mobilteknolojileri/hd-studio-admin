@@ -10,13 +10,17 @@
 
 // Public project URL; the page must be allowed in the ADMIN_ORIGINS secret.
 const API = "https://mqyfohctaaqdjpninyrj.supabase.co/functions/v1/admin";
-const MODULES = ["backup", "friends", "names", "extract", "repair"];
+const MODULES = ["backup", "friends", "names", "extract", "repair", "accounts"];
+// A new licence starts with the five Hay Day tools ticked. Hesap Yönetimi is a
+// paid extra and needs a backend address, so it is opted into, not out of.
+const DEFAULT_MODULES = ["backup", "friends", "names", "extract", "repair"];
 const MODULE_LABELS = {
   backup: "Yedek Al",
   friends: "İstek Gönder",
   names: "İsim Ver",
   extract: "Yedek Çöz",
   repair: "Yedek Onar",
+  accounts: "Hesap Yönetimi",
 };
 const STORE = "hds-admin-session";
 
@@ -237,10 +241,19 @@ for (const m of MODULES) {
   cb.type = "checkbox";
   cb.name = "modules";
   cb.value = m;
-  cb.checked = true;
+  cb.checked = DEFAULT_MODULES.includes(m);
+  if (m === "accounts") cb.addEventListener("change", syncAccountsRow);
   lab.appendChild(cb);
   lab.appendChild(el("span", MODULE_LABELS[m]));
   $("module-checks").appendChild(lab);
+}
+
+/** The address fields only mean anything when the module is on the licence. */
+function syncAccountsRow() {
+  const on = [...form.querySelectorAll("input[name=modules]")].some(
+    (cb) => cb.value === "accounts" && cb.checked,
+  );
+  $("accounts-row").hidden = !on;
 }
 
 function openDialog(license) {
@@ -253,10 +266,13 @@ function openDialog(license) {
   form.max_machines.value = license ? license.max_machines : 2;
   form.expires_at.value = license ? toDayInput(license.expires_at) : "";
   form.note.value = license ? license.note || "" : "";
-  const mods = license ? license.modules : MODULES;
+  const mods = license ? license.modules : DEFAULT_MODULES;
   for (const cb of form.querySelectorAll("input[name=modules]")) {
     cb.checked = mods.includes(cb.value);
   }
+  form.accounts_url.value = license ? license.accounts_url || "" : "";
+  form.accounts_key.value = license ? license.accounts_key || "" : "";
+  syncAccountsRow();
   $("dlg-error").textContent = "";
   dlg.showModal();
 }
@@ -264,6 +280,9 @@ function openDialog(license) {
 form.addEventListener("submit", async (ev) => {
   ev.preventDefault();
   const checked = [...form.querySelectorAll("input[name=modules]")].filter((cb) => cb.checked);
+  // Taking the module off takes its backend with it; otherwise an address left
+  // in a hidden field would outlive the licence that needed it.
+  const wantsAccounts = checked.some((cb) => cb.value === "accounts");
   const payload = {
     max_machines: Number.parseInt(form.max_machines.value, 10),
     modules: checked.map((cb) => cb.value),
@@ -272,6 +291,8 @@ form.addEventListener("submit", async (ev) => {
     channel: state.editing?.channel || "stable",
     expires_at: form.expires_at.value || null,
     note: form.note.value.trim() || null,
+    accounts_url: wantsAccounts ? form.accounts_url.value.trim() || null : null,
+    accounts_key: wantsAccounts ? form.accounts_key.value.trim() || null : null,
   };
   let action = "update";
   if (state.editing) {

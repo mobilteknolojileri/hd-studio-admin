@@ -58,6 +58,12 @@
       <legend>Lisansa dahil araçlar</legend>
       <div class="checks" id="module-checks"></div>
     </fieldset>
+    <fieldset id="accounts-row" hidden>
+      <legend>Hesap Yönetimi arka ucu</legend>
+      <p class="muted">Müşterinin kendi Supabase projesi. Kayıtları orada durur; bu iki değer imzalı lisansla uygulamaya gider.</p>
+      <label>Adres <input name="accounts_url" type="url" maxlength="200" placeholder="https://xxxx.supabase.co"></label>
+      <label>Publishable key <input name="accounts_key" maxlength="200" placeholder="sb_publishable_..."> <small>Gizli (sb_secret_) anahtar buraya yazılmaz.</small></label>
+    </fieldset>
     <label>Bitiş tarihi <input name="expires_at" type="date" lang="tr-TR"> <small>Boş bırakırsanız süresiz.</small></label>
     <label>Not <textarea name="note" rows="2" maxlength="500"></textarea></label>
     <p id="dlg-error" class="msg error" role="alert"></p>
